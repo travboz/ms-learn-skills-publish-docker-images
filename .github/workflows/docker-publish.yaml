@@ -1,0 +1,30 @@
+name: Docker Publish
+
+on:
+  push: 
+    branches:
+      - main
+    
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps: 
+      - name: Checkout repository code
+        uses: actions/checkout@v6
+      
+      - name: Log in to the Container registry
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }} # this is built-in, so no extra setup is needed
+
+      - name: Build and push Docker image
+        run: |
+          docker build . --tag ghcr.io/travboz/ms-learn-skills-publish-docker-images/stackoverflown:main
+          docker push ghcr.io/travboz/ms-learn-skills-publish-docker-images/stackoverflown:main
